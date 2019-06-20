@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+import { Component } from 'react';
 async function loadGreeting(){
   const response = await fetch('http://localhost:9000/graphql?', {
     method: 'POST',
@@ -9,16 +9,28 @@ async function loadGreeting(){
     body: JSON.stringify({query: '{ greeting }'})
   });
   const responseBody = await response.json();
-  console.log(responseBody);
+  return responseBody.data.greeting;
 }
 
 loadGreeting();
 
-function App() {
+
+
+class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {greeting: ''}
+    loadGreeting().then((greeting) => this.setState({greeting}))
+  }
+
+
+  render(){
+    const {greeting} = this.state;
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
+        <h1 className="App-title">{greeting}</h1>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
@@ -34,5 +46,5 @@ function App() {
     </div>
   );
 }
-
+}
 export default App;
